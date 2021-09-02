@@ -1,7 +1,7 @@
 <template>
     <div class="video" >
         <div v-for="(item,index) in videoList " :key="index" >
-            <div class="onbox" >
+            <div class="onbox"  v-if="getDevice()!=1">
                  <div class="box"  @click="onClick(index)" ></div>
             </div>
             <div class="video-box" >
@@ -14,6 +14,7 @@
                     type="video/mp4"  
                     controls
                     :playsinline="true"
+                     x5-video-player-type="h5-page"
                     :webkit-playsinline="true"
                     :x5-playsinline="true"
                     >
@@ -29,7 +30,6 @@ export default {
     props: {
         videoList: {
             type: Array,
-            default:''
         },
     },
     data() {
@@ -39,7 +39,20 @@ export default {
         }
     },
     methods: {
-          onClick(val) {
+        getDevice() {
+            let u = navigator.userAgent;
+            let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+            let systemType = 0
+            let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+            if (isAndroid) {
+                systemType = 2
+            }
+            if (isIOS) {
+            　　systemType = 1
+            }
+            return systemType;
+        },
+        onClick(val) {
                 this.player = this.$refs[`video${val}`][0];
                 this.videoFlg = this.player.paused;
                 this.videoList.forEach((item,index) => {
@@ -67,8 +80,7 @@ export default {
     }
     .box{
         position: absolute;
-        height: 200px;
-        z-index: 100;
+        height: 140px;
         width: 100%;
     }
     .vtxt{
@@ -89,6 +101,7 @@ export default {
             display: block;
             object-fit: contain;
             background-color: #242424;
+            object-position: center;
         }
         .time {
             color: #fff;
